@@ -117,10 +117,12 @@ function _tap_report(success, test, extra) {
         .map(k => _tap_asYamlExtra(k, extra[k]) )
         .filter(e => e)
 
-    if (lines.length)
+    if (lines.length) {
       lines = lines.join('\n').split('\n')
-    else
-      lines = inspect(extra).split(/\r?\n/).map(l => '# '+l)
+      lines.push('')
+    }
+
+    lines = lines.concat(inspect(extra).split(/\r?\n/).map(l => '# '+l))
 
     lines.unshift('')
     out += `\n  ---${lines.join('\n  ')}\n`
