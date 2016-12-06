@@ -13,8 +13,10 @@ const assert_tap_results = (tap1, expected_results, debug) => {
 }
 
 const assert_tap_output = (tap1, expected_output, debug) => {
+  let tap_output = tap1.output.slice().sort()
+  expected_output = expected_output.slice().sort()
   for(let i=0; i<expected_output.length; i++) {
-    let actual = tap1.output[i], expected = expected_output[i]
+    let actual = tap_output[i], expected = expected_output[i]
     if (!actual.startsWith(expected) && debug)
       console.log({actual, expected})
     assert(actual.startsWith(expected))
@@ -111,7 +113,7 @@ tap0.test('failed test should fail', ()=> {
   tap1.test('works-two', () => Promise.resolve().then(()=>true))
 
   return assert_tap_answers(tap1.finish(), {
-    exitCode: 1, debug: true,
+    exitCode: 1,
     expected_results: [
       { success: false, total_pass: 2, total_fail: 3 },
       { success: true, test: { title: 'works-one', idx: 1 } },
