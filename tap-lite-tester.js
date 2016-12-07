@@ -27,14 +27,14 @@ function createTAP(setExitCode_p) {
     skip(title, cb) {
       let test = new tap.TAPTest({title, directive: 'SKIP', idx: ++tap._tap_idx})
       return tap._addTestPromise(test,
-        this._withTest(test)
+        tap._withTest(test)
           .then(() => tap._result(true, test)))
     },
 
     todo(title, cb) {
       let test = new tap.TAPTest({title, directive: 'TODO', idx: ++tap._tap_idx})
       return tap._addTestPromise(test,
-        this._withTest(test)
+        tap._withTest(test)
           .then(() => tap._result(false, test)))
     },
 
@@ -45,7 +45,7 @@ function createTAP(setExitCode_p) {
     test, _test(title, cb) {
       let test = new tap.TAPTest({title, idx: ++tap._tap_idx})
       return tap._addTestPromise(test,
-        this._withTest(test, cb)
+        tap._withTest(test, cb)
           .then(ans => (test.validate(), ans))
           .then(ans => tap._result(true, test, typeof ans==='object' ? ans : undefined),
                 err => tap._result(false, test, err))) },

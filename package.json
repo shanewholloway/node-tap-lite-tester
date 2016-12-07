@@ -1,6 +1,6 @@
 {
   "name": "tap-lite-tester",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "TAP lightweight testing with no dependencies",
   "keywords": [
     "tap",
@@ -18,6 +18,9 @@
   "repository": "shanewholloway/node-tap-lite-tester",
   "main": "tap-lite-tester.js",
   "browser": "tap-lite-tester.min.js",
+  "bin": {
+    "tap-lite-runner": "./bin/tap-lite-runner"
+  },
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-preset-es2015": "^6.16.0"

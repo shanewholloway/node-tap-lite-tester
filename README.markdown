@@ -11,4 +11,4 @@ $ npm install tap-lite-tester
 
 ### Example
 
-See `test/test-self.js` for examples using tap-lite-tester. Self-hosting for the win!
+See `examples/` for using tap-lite-tester. Self-hosting for the win!

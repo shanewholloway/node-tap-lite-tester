@@ -42,9 +42,11 @@ function runOneTest(testFile, args, options) {
     child.stderr.on('data', data => stdout.push(data))
     child.on('error', reject)
     child.on('close', exitCode => {
-      let ans = {exitCode, testFile,
-        stdout: _finish_nd_buffer(stdout),
-        stderr: _finish_nd_buffer(stderr)}
+      let ans = {exitCode, testFile}
+      if (stdout.length)
+        ans.stdout = _finish_nd_buffer(stdout)
+      if (stderr.length)
+        ans.stderr = _finish_nd_buffer(stderr)
       return exitCode ? reject(ans) : resolve(ans) }) })}
 
 

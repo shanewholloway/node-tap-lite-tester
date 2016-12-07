@@ -1,0 +1,17 @@
+{
+  "name": "tap-lite-tester-example",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "tap-lite-tester": "*"
+  },
+  "scripts": {
+    "test": "npm -s run test:option_a",
+    "test:option_a": "node --harmony test/all.js test/test*.js",
+    "test:option_b": "tap-lite-runner test/test*.js",
+    "test:option_c": "node --harmony ./node_modules/.bin/tap-lite-runner test/test*.js",
+    "test:option_d": "node --harmony ./node_modules/tap-lite-tester/runner.js test/test*.js"
+  }
+}

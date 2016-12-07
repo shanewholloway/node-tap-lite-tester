@@ -1,0 +1,9 @@
+#!/usr/bin/env node --harmony
+// vim: ft=javascript sw=2 ts=2
+'use strict'
+
+const runTests = require('../runner')
+if (module === require.main)
+  runTests(process.argv.slice(2))
+    .catch(err => console.error(err))
+
