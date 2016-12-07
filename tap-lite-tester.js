@@ -56,7 +56,7 @@ function createTAP(setExitCode_p) {
     test_cb(title, cb) {
       return tap._test(title, test =>
           new Promise((resolve, reject) => {
-            test.done = (err, ans) => err ? reject(err) : resolve(ans)
+            test.end = test.done = (err, ans) => err ? reject(err) : resolve(ans)
             try { cb(test) } catch (err) { reject(err) } }) )},
 
     test, _test(title, cb) {
