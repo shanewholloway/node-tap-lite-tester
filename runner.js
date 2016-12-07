@@ -19,13 +19,10 @@ function runTests(testFileList, args, options) {
 
   let tap = options.tap || g_tap
   tap.start(testFileList.length)
-  return testFileList
-    .reduce((tip, fn) =>
-        tip.then(() =>
-          tap.test(`Run tests in "${fn}"`, () =>
-            runOneTest(path_resolve(fn), args, options))),
-      Promise.resolve())
-    .then(() => tap.finish()) }
+  testFileList.map(fn =>
+    tap.test(`Run tests in "${fn}"`, () =>
+      runOneTest(path_resolve(fn), args, options)))
+  return tap.finish() }
 
 
 const _finish_nd_buffer = buf_data =>

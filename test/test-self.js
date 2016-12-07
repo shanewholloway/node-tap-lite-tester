@@ -1,58 +1,9 @@
 'use strict'
-const inspect = obj => require('util').inspect(obj, {colors: true, depth: null})
-
 const assert = require('assert')
-
-const assert_tap_results = (tap1, expected_results, debug) => {
-  for(let i=0; i<expected_results.length; i++) {
-    let actual = tap1.results[i], expected = expected_results[i]
-    delete actual.extra
-    assert.deepEqual(actual, expected)
-  }
-  assert.equal(tap1.results.length, expected_results.length)
-}
-
-const assert_tap_output = (tap1, expected_output, debug) => {
-  let tap_output = tap1.output.slice().sort()
-  expected_output = expected_output.slice().sort()
-  for(let i=0; i<expected_output.length; i++) {
-    let actual = tap_output[i], expected = expected_output[i]
-    if (!actual.startsWith(expected) && debug)
-      console.log({actual, expected})
-    assert(actual.startsWith(expected))
-  }
-  assert.equal(tap1.output.length, expected_output.length)
-}
-
-const assert_tap_answers = (tap_promise, opt) =>
-  tap_promise.then(tap => {
-    try {
-      if (opt.expected_summary)
-        assert.deepEqual(tap.summary, opt.expected_summary)
-
-      if (opt.expected_results)
-        assert_tap_results(tap, opt.expected_results, opt.debug)
-
-      if (opt.expected_output)
-        assert_tap_output(tap, opt.expected_output, opt.debug)
-
-      if (tap.exitCode !== undefined)
-        assert.equal(tap.exitCode, opt.exitCode || 0)
-      else assert.equal(process.exitCode, opt.exitCode || 0)
-
-    } catch(err) {
-      if (opt.debug) console.log(inspect(tap))
-      throw err
-    }
-  })
+const {assert_tap_answers, createTestTAP} = require('./_assert_utils')
 
 let tap0 = require('../tap-lite-tester')
 tap0.start(5)
-
-const createTestTAP = () =>
-  Object.assign(tap0.createTAP(true), {
-    setExitCode() { this.exitCode = this.summary.success ? 0 : 1 },
-    log(out) {} })
 
 tap0.test('garden path should succeed', ()=> {
   const tap1 = createTestTAP()

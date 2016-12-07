@@ -9,20 +9,34 @@ function createTAP(setExitCode_p) {
     if (!cb) return tap.todo(title)
     else return tap._test(title, cb) }
 
+  let tap_start
+  let tap_go = new Promise(resolve => tap_start = resolve)
+    .then(() => {
+      tap.output = []
+      tap._output('TAP version 13')
+      if (summary.planned) {
+        tap._output(`1..${summary.planned}`)
+        tap._checkPlannedCount()
+      }
+      return tap })
+
   let tap = {
     createTAP,
     summary,
     TAPTest,
     results: [summary],
-    output: [],
 
     start(count) {
-      tap._output("TAP version 13")
-      if (count) tap.plan(count) },
+      if (count) tap.plan(count)
+      return tap_go },
 
     plan(count) { 
+      if (tap.output)
+        throw new Error("Cannot change plan after running has commenced")
       summary.planned = count
-      tap._output(`1..${count}`) },
+      return tap_go },
+    addPlans(inc_count) { 
+      return tap.plan((inc_count || 1) + (summary.planned || 0)) },
 
     skip(title, cb) {
       let test = new tap.TAPTest({title, directive: 'SKIP', idx: ++tap._tap_idx})
@@ -39,7 +53,11 @@ function createTAP(setExitCode_p) {
     },
 
     only(title, cb) {
-      throw new Error("only() is not yet implemented")
+      if (tap._only_test)
+        throw new Error("Multiple 'only()' tests specified")
+      let res = tap._test(title, cb)
+      tap._only_test = tap._all_tests.pop()
+      return res
     },
 
     test, _test(title, cb) {
@@ -52,12 +70,17 @@ function createTAP(setExitCode_p) {
 
     finish(count, setExitCode=setExitCode_p) {
       if (count) tap.plan(count)
-      tap._checkPlannedCount()
       let tests = tap._all_tests
       tap._all_tests = null
+      if (tap._only_test) {
+        tests.forEach(ea => ea.test.omit = true)
+        tests = [tap._only_test]
+      }
+
+      tap_start(tap)
       return Promise.all(tests)
         .then(() => {
-          summary.success = summary.total_fail === 0
+          summary.success = (summary.total_fail === 0)
 
           if (setExitCode)
             tap.setExitCode()
@@ -73,6 +96,9 @@ function createTAP(setExitCode_p) {
       if (success) ++summary.total_pass
       else ++summary.total_fail
 
+      if (test.omit)
+        return tap.results[test.idx] = null
+
       let out = tap._report(success, test, extra, tap.inspect)
       if (test.idx)
         tap.results[test.idx] = extra===undefined ? {success, test} : {success, test, extra}
@@ -81,8 +107,7 @@ function createTAP(setExitCode_p) {
     _report: _tap_report,
 
     _withTest(test, cb) {
-      return Promise.resolve(test)
-        .then(test => cb ? cb(test) : null) },
+      return tap_go.then(() => !cb || test.omit ? null : cb(test)) },
 
     _addTestPromise(test, promise) {
       promise.test = test
