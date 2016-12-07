@@ -25,3 +25,4 @@ tap.test('mod')
 tap.test.skip('mul', t =>
   tgt.mul(x,y).then(ans => t.fail("how'd you get here anyway?")))
 
+tap.finish(6)

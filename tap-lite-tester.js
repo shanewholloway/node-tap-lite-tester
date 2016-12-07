@@ -38,27 +38,22 @@ function createTAP(setExitCode_p) {
     addPlans(inc_count) { 
       return tap.plan((inc_count || 1) + (summary.planned || 0)) },
 
-    skip(title, cb) {
-      let test = new tap.TAPTest({title, directive: 'SKIP', idx: ++tap._tap_idx})
-      return tap._addTestPromise(test,
-        tap._withTest(test)
-          .then(() => tap._result(true, test)))
-    },
-
-    todo(title, cb) {
-      let test = new tap.TAPTest({title, directive: 'TODO', idx: ++tap._tap_idx})
-      return tap._addTestPromise(test,
-        tap._withTest(test)
-          .then(() => tap._result(false, test)))
-    },
+    skip(title, cb, reason) { return tap._skip(title, cb, 'SKIP', reason) },
+    todo(title, cb, reason) { return tap._skip(title, cb, 'TODO', reason) },
+    failing(title, cb, reason) { return tap._skip(title, cb, 'TODO', 'failing') },
 
     only(title, cb) {
       if (tap._only_test)
         throw new Error("Multiple 'only()' tests specified")
       let res = tap._test(title, cb)
       tap._only_test = tap._all_tests.pop()
-      return res
-    },
+      return res },
+
+    test_cb(title, cb) {
+      return tap._test(title, test =>
+          new Promise((resolve, reject) => {
+            test.done = (err, ans) => err ? reject(err) : resolve(ans)
+            try { cb(test) } catch (err) { reject(err) } }) )},
 
     test, _test(title, cb) {
       let test = new tap.TAPTest({title, idx: ++tap._tap_idx})
@@ -67,6 +62,11 @@ function createTAP(setExitCode_p) {
           .then(ans => (test.validate(), ans))
           .then(ans => tap._result(true, test, typeof ans==='object' ? ans : undefined),
                 err => tap._result(false, test, err))) },
+
+    _skip(title, _cb_, directive, reason) {
+      let test = new tap.TAPTest({title, directive: [directive || 'SKIP', reason].join(' '), idx: ++tap._tap_idx})
+      return tap._addTestPromise(test, tap._withTest(test).then(() => tap._result(true, test))) },
+
 
     finish(count, setExitCode=setExitCode_p) {
       if (count) tap.plan(count)
@@ -121,9 +121,11 @@ function createTAP(setExitCode_p) {
       return false },
   }
 
-  test.todo = tap.todo
-  test.skip = tap.skip
   test.only = tap.only
+  test.skip = tap.skip
+  test.todo = tap.todo
+  test.failing = tap.failing
+  test.cb = tap.test_cb
 
   return Object.defineProperties(tap, 
     {_all_tests: {value: [], writable: true},
