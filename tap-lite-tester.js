@@ -42,6 +42,10 @@ function createTAP(setExitCode_p) {
     todo(title, cb, reason) { return tap._skip(title, cb, 'TODO', reason) },
     failing(title, cb, reason) { return tap._skip(title, cb, 'TODO', 'failing') },
 
+    serial(title, cb) {
+      let prev = Promise.all(this._all_tests)
+      return this._test(title, test => prev.then(() => cb(test))) },
+
     only(title, cb) {
       if (tap._only_test)
         throw new Error("Multiple 'only()' tests specified")
@@ -121,6 +125,7 @@ function createTAP(setExitCode_p) {
       return false },
   }
 
+  test.serial = tap.serial
   test.only = tap.only
   test.skip = tap.skip
   test.todo = tap.todo

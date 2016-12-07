@@ -1,6 +1,6 @@
 {
   "name": "tap-lite-tester",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "TAP lightweight testing with no dependencies",
   "keywords": [
     "tap",

@@ -45,7 +45,10 @@ const check_tap_results = (t, tap1, expected_results, debug) => {
       t.deepEqual(actual, expected, `result mismatch at idx ${i}`)
     }
   }
-  t.equal(tap1.results.length, expected_results.length, 'Result length mismatch')
+  if (tap1.results.length != expected_results.length) {
+    console.dir({actual: tap1.results, expected: expected_results}, {depth: null})
+    t.equal(tap1.results.length, expected_results.length, 'Result length mismatch')
+  }
 }
 
 
