@@ -19,7 +19,7 @@ function runTests(testFileList, args, options) {
 
   let tap = options.tap || g_tap
   tap.start(testFileList.length)
-  testFileList.map(fn =>
+  testFileList.slice().sort().map(fn =>
     tap.test(`Run tests in "${fn}"`, () =>
       runOneTest(path_resolve(fn), args, options)))
   return tap.finish() }

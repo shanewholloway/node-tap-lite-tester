@@ -130,9 +130,9 @@ assert_tap_answers(tap0.finish(5), {
   exitCode: 0,
   expected_results: [
     { success: true, total_pass: 5, total_fail: 0, planned: 5 },
-    { success: true, test: { title: 'garden path should succeed', idx: 1, assertions: 9 } },
-    { success: true, test: { title: 'garden path with plan should succeed', idx: 2, assertions: 10 } },
-    { success: true, test: { title: 'failed test should fail', idx: 3, assertions: 13 } },
+    { success: true, test: { title: 'garden path should succeed', idx: 1, assertions: 8 } },
+    { success: true, test: { title: 'garden path with plan should succeed', idx: 2, assertions: 9 } },
+    { success: true, test: { title: 'failed test should fail', idx: 3, assertions: 12 } },
     { success: true, test: { title: 'plan under actual should fail', idx: 4, assertions: 7 } },
     { success: true, test: { title: 'plan over actual should fail', idx: 5, assertions: 7 } }
   ],
