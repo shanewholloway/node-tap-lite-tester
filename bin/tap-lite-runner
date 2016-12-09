@@ -1,4 +1,4 @@
-#!/usr/bin/env node --harmony
+#!/usr/bin/env node
 // vim: ft=javascript sw=2 ts=2
 'use strict'
 
