@@ -212,7 +212,9 @@ function _tap_report(success, test, extra, debug_inspect) {
     if (lines.length) {
       lines = lines.join('\n').split('\n')
       lines.push('')
-    } else if (extra.toString)
+    } else if (!debug_inspect && extra.stack)
+      lines = [].concat(extra.stack)
+    else if (extra.toString)
       lines = extra.toString().split(/\r?\n/)
 
     if (debug_inspect)
