@@ -211,7 +211,7 @@ function _tap_report(success, test, extra, debug_inspect) {
           .filter(e => e)
       } catch (err) { if (!err instanceof TypeError) throw err }
 
-    if (lines.length) {
+    if (lines && lines.length) {
       lines = lines.join('\n').split('\n')
       lines.push('')
     } else if (!debug_inspect && extra.stack)
