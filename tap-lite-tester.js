@@ -205,9 +205,11 @@ function _tap_report(success, test, extra, debug_inspect) {
       lines = extra.split(/\r?\n/)
 
     else if ('object' === typeof extra)
-      lines = Object.keys(extra)
-        .map(k => _tap_asYamlExtra(k, extra[k]) )
-        .filter(e => e)
+      try {
+        lines = Object.keys(extra)
+          .map(k => _tap_asYamlExtra(k, extra[k]) )
+          .filter(e => e)
+      } catch (err) { if (!err instanceof TypeError) throw err }
 
     if (lines.length) {
       lines = lines.join('\n').split('\n')
