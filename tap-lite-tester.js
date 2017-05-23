@@ -6,8 +6,12 @@ function createTAP(setExitCode_p) {
   let summary = {success: null, total_pass: 0, total_fail: 0}
 
   function test(title, cb) {
+    if ('string' !== typeof title)
+      throw new TypeError("Expected 'title' as a string for the first argument")
     if (!cb) return tap.todo(title)
-    else return tap._test(title, cb) }
+    if ('function' !== typeof cb)
+      throw new TypeError("Expected a test body callback function for the second argument")
+    return tap._test(title, cb) }
 
   let tap_start
   let tap_go = new Promise(resolve => tap_start = resolve)
