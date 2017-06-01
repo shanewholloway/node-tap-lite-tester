@@ -160,6 +160,16 @@ TAPTest.prototype.validate = function() {
   if (this.failed > 0)
     throw new Error(`Test failed ${this.failed} of ${this.assertions} assertions performed`)
   return this }
+
+TAPTest.prototype.promiseResolves = function(aPromise, message) {
+  return aPromise.then(ans => true, err => assert.fail(message)) }
+TAPTest.prototype.promiseRejects = function(aPromise, message) {
+  return aPromise.then(ans => assert.fail(message), err => true) }
+TAPTest.prototype.asyncThrows = function(asyncBlock, error, message) {
+  return Promise.resolve(asyncBlock())
+    .then(ans => assert.fail(message)
+        , err => assert.throws(()=>{ throw err }, error, message) )}
+
 Object.keys(assert).forEach(k => {
   const inner_fn = assert[k]
 

@@ -25,6 +25,14 @@ tap.todo(title, cb, reason)
 tap.failing(title, cb, reason)
 ```
 
+Test callback argument supports all functions of the [assert](https://nodejs.org/dist/latest/docs/api/assert.html) library, as well as ::
+
+```javascript
+t.promiseResolves(aPromise, message)
+t.promiseRejects(aPromise, message)
+t.asyncThrows(asyncBlock, error, message)
+```
+
 ### Example
 
 See `examples/` for using tap-lite-tester. Self-hosting for the win!

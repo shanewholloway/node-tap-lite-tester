@@ -1,6 +1,6 @@
 {
   "name": "tap-lite-tester",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "TAP lightweight testing with no dependencies",
   "keywords": [
     "tap",
@@ -35,6 +35,7 @@
     "prepublish": "npm -s run build && npm -s run test",
     "preversion": "npm -s run build && npm -s run test",
     "watch": "nodemon test/test-self.js",
-    "test": "node --harmony test/all.js test/test*.js"
+    "test": "node --harmony test/all.js test/test*.js",
+    "testone": "node --harmony test/test-assert-api.js"
   }
 }

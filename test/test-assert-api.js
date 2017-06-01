@@ -3,7 +3,7 @@ const {assert_tap_answers, check_tap_answers, createTestTAP} = require('./_asser
 
 
 let tap0 = require('../tap-lite-tester')
-tap0.start(5)
+tap0.start(6)
 
 tap0.test('garden path should succeed', t => {
   const tap1 = createTestTAP()
@@ -135,24 +135,60 @@ tap0.test('plan over actual should fail', t => {
 })
 
 
+tap0.test('promise and async assertions should work', t => {
+  const tap1 = createTestTAP()
+
+  tap1.start(6)
+  tap1.test('promiseResolves passes upon resolve', t =>
+    t.promiseResolves(Promise.resolve(true)) )
+  tap1.test('promiseResolves fails upon reject', t =>
+    t.promiseResolves(Promise.reject(true)) )
+  tap1.test('promiseRejects fails upon resolve', t =>
+    t.promiseRejects(Promise.resolve(true)) )
+  tap1.test('promiseRejects passes upon reject', t =>
+    t.promiseRejects(Promise.reject(true)) )
+  tap1.test('asyncThrow passes upon throw', t =>
+    t.asyncThrows(async arg => { await arg; throw new Error('Error during async') }) )
+  tap1.test('asyncThrow fails upon return', t =>
+    t.asyncThrows(async arg => { await arg; return true }) )
+
+  return check_tap_answers(t, tap1.finish(), {
+    exitCode: 1,
+    expected_summary:
+      { success: false, total_pass: 3, total_fail: 3, planned: 6 },
+    expected_output: [
+      'TAP version 13',
+      '1..6',
+      'ok 1 - promiseResolves passes upon resolve',
+      'not ok 2 - promiseResolves fails upon reject',
+      'not ok 3 - promiseRejects fails upon resolve',
+      'ok 4 - promiseRejects passes upon reject',
+      'ok 5 - asyncThrow passes upon throw',
+      'not ok 6 - asyncThrow fails upon return',
+    ]})
+})
+
+
 assert_tap_answers(tap0.finish(), {
   exitCode: 0,
   expected_results: [
-    { success: true, total_pass: 5, total_fail: 0, planned: 5 },
+    { success: true, total_pass: 6, total_fail: 0, planned: 6 },
     { success: true, test: { title: 'garden path should succeed', idx: 1, assertions: 10 } },
     { success: true, test: { title: 'garden path with plan should succeed', idx: 2, assertions: 11 } },
     { success: true, test: { title: 'failed test should fail', idx: 3, assertions: 16 } },
     { success: true, test: { title: 'plan under actual should fail', idx: 4, assertions: 10 } },
-    { success: true, test: { title: 'plan over actual should fail', idx: 5, assertions: 8 } }
+    { success: true, test: { title: 'plan over actual should fail', idx: 5, assertions: 8 } },
+    { success: true, test: { title: 'promise and async assertions should work', idx: 6, assertions: 11} },
   ],
   expected_output: [
     'TAP version 13',
-    '1..5',
+    '1..6',
     'ok 1 - garden path should succeed',
     'ok 2 - garden path with plan should succeed',
     'ok 3 - failed test should fail',
     'ok 4 - plan under actual should fail',
     'ok 5 - plan over actual should fail',
+    'ok 6 - promise and async assertions should work',
   ],
 }).catch(err => {
   console.error(err)
