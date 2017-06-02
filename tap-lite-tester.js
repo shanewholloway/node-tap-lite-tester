@@ -162,13 +162,13 @@ TAPTest.prototype.validate = function() {
   return this }
 
 TAPTest.prototype.promiseResolves = function(aPromise, message) {
-  return aPromise.then(ans => true, err => assert.fail(message)) }
+  return aPromise.then(ans => this.assert(true), err => this.fail(message)) }
 TAPTest.prototype.promiseRejects = function(aPromise, message) {
-  return aPromise.then(ans => assert.fail(message), err => true) }
+  return aPromise.then(ans => this.fail(message), err => this.assert(true)) }
 TAPTest.prototype.asyncThrows = function(asyncBlock, error, message) {
   return Promise.resolve(asyncBlock())
-    .then(ans => assert.fail(message)
-        , err => assert.throws(()=>{ throw err }, error, message) )}
+    .then(ans => this.fail(message)
+        , err => this.throws(()=>{ throw err }, error, message) )}
 
 Object.keys(assert).forEach(k => {
   const inner_fn = assert[k]
@@ -178,6 +178,7 @@ Object.keys(assert).forEach(k => {
     try { return inner_fn.apply(null, arguments) }
     catch (err) { this.failed += 1; throw err }}
 })
+TAPTest.prototype.assert = TAPTest.prototype.ok
 
 
 
