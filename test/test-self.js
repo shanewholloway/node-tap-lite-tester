@@ -1,6 +1,6 @@
 'use strict'
 const assert = require('assert')
-const {assert_tap_answers, createTestTAP} = require('./_assert_utils')
+const {assert_tap_answers, createTestTAP, isPreNodeV8} = require('./_assert_utils')
 
 let tap0 = require('../tap-lite-tester')
 tap0.start(5)
@@ -77,7 +77,9 @@ tap0.test('failed test should fail', ()=> {
       'TAP version 13',
       'ok 1 - works-one',
       'not ok 2 - fails-two\n  ---\n  Error: Should fail based on exception!\n',
-      'not ok 4 - fails-four\n  ---\n  name: "AssertionError"\n  actual: 1\n  expected: 2\n  operator: "=="\n  message: "Should fail based on assetion exception"',
+      isPreNodeV8
+        ? 'not ok 4 - fails-four\n  ---\n  name: "AssertionError"\n  actual: 1\n  expected: 2\n  operator: "=="\n  message: "Should fail based on assetion exception"'
+        : 'not ok 4 - fails-four\n  ---\n  generatedMessage: false\n  name: "AssertionError [ERR_ASSERTION]"\n  code: "ERR_ASSERTION"\n  actual: 1\n  expected: 2\n  operator: "=="',
       'not ok 3 - fails-three\n  ---\n  Should fail based on promise rejection',
       'ok 5 - works-two',
     ],

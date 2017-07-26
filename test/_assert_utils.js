@@ -64,10 +64,15 @@ const check_tap_output = (t, tap1, expected_output, debug) => {
   t.equal(tap1.output.length, expected_output.length, 'output length mismatch')
 }
 
+
+const nodeMajorVersion = process.version.split('.')[0]
+const isPreNodeV8 = 'v8' > nodeMajorVersion
+
 Object.assign(exports, {
   createTestTAP, inspect,
   assert_tap_answers,
   check_tap_answers,
   check_tap_results,
   check_tap_output,
+  nodeMajorVersion, isPreNodeV8,
 })

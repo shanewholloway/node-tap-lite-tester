@@ -137,7 +137,8 @@ function createTAP(setExitCode_p) {
   test.cb = tap.test_cb
 
   return Object.defineProperties(tap, 
-    {_all_tests: {value: [], writable: true},
+    {default: {get() { return this }},
+     _all_tests: {value: [], writable: true},
      _tap_idx: {value: 0, writable: true}})
 }
 
